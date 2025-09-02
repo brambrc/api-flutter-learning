@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
+import 'core/dependency_injection.dart';
 
-// Entry point aplikasi Flutter untuk belajar API
-void main() {
+// Entry point aplikasi Flutter untuk belajar API dengan BLoC
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Setup dependency injection
+  await setupDependencyInjection();
+  
   runApp(const ApiLearningApp());
 }
 

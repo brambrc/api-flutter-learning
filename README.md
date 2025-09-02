@@ -1,6 +1,6 @@
 # API Learning Flutter
 
-Aplikasi Flutter untuk belajar penggunaan API dengan package HTTP. Proyek ini mendemonstrasikan konsep-konsep penting dalam konsumsi API menggunakan Flutter.
+Aplikasi Flutter untuk belajar penggunaan API dengan package HTTP dan BLoC Architecture. Proyek ini mendemonstrasikan konsep-konsep penting dalam konsumsi API dan state management menggunakan Flutter.
 
 ## 📚 Materi Pembelajaran
 
@@ -24,6 +24,13 @@ dependencies:
   http: ^1.2.0                    # Untuk HTTP requests
   provider: ^6.1.1               # State management sederhana  
   shared_preferences: ^2.2.2     # Penyimpanan data lokal
+  flutter_bloc: ^8.1.3           # BLoC state management
+  get_it: ^7.6.4                 # Dependency injection
+  equatable: ^2.0.5              # State comparison helper
+
+dev_dependencies:
+  bloc_test: ^9.1.4              # Testing BLoC components
+  mocktail: ^1.0.1               # Mocking untuk testing
 ```
 
 ### 3. Pengenalan API
@@ -36,7 +43,22 @@ dependencies:
 - **PUT**: Memperbarui data di server
 - **DELETE**: Menghapus data di server
 
-### 4. API yang Digunakan
+### 4. BLoC Architecture
+
+Proyek ini mengimplementasikan **BLoC (Business Logic Component) Architecture**:
+
+#### Layer Architecture:
+- **Presentation Layer**: UI components (Widgets)
+- **Business Logic Layer**: BLoC dan Cubit untuk state management
+- **Data Layer**: Repository dan Data Provider untuk akses data
+
+#### Pattern yang Digunakan:
+- **BLoC Pattern**: Event + State untuk complex logic
+- **Cubit Pattern**: Method calls untuk simple state changes
+- **Repository Pattern**: Abstraksi data sources
+- **Dependency Injection**: GetIt untuk loose coupling
+
+### 5. API yang Digunakan
 
 Proyek ini menggunakan **JSONPlaceholder** - API gratis untuk testing dan prototyping:
 - Base URL: `https://jsonplaceholder.typicode.com`
@@ -48,41 +70,69 @@ Proyek ini menggunakan **JSONPlaceholder** - API gratis untuk testing dan protot
 
 ```
 lib/
-├── main.dart                 # Entry point aplikasi
-├── models/                   # Data models
-│   ├── post.dart            # Model untuk Post
-│   └── user.dart            # Model untuk User
-├── services/                 # API services
-│   └── api_service.dart     # Service untuk semua API calls
-├── screens/                  # UI screens
-│   ├── home_screen.dart     # Home screen dengan menu
-│   ├── posts_screen.dart    # CRUD operations untuk posts
-│   ├── users_screen.dart    # Display users data
-│   ├── create_post_screen.dart # Form untuk create/edit post
-│   └── api_demo_screen.dart # Testing console untuk API
-└── widgets/                  # Reusable widgets
-    ├── post_card.dart       # Widget untuk display post
-    ├── user_card.dart       # Widget untuk display user
-    └── loading_widget.dart  # Loading, error, dan empty states
+├── main.dart                     # Entry point dengan DI setup
+├── core/                         # Core functionalities
+│   └── dependency_injection.dart # GetIt setup dan configuration
+├── models/                       # Data models
+│   ├── post.dart                # Model untuk Post
+│   └── user.dart                # Model untuk User (complex model)
+├── data/                         # Data Layer
+│   ├── providers/               # Data providers (API access)
+│   │   ├── post_data_provider.dart
+│   │   └── user_data_provider.dart
+│   └── repositories/            # Repository pattern
+│       ├── post_repository.dart
+│       └── user_repository.dart
+├── bloc/                         # BLoC components
+│   ├── post_bloc.dart           # BLoC untuk Posts
+│   ├── post_event.dart          # Events untuk PostBloc
+│   └── post_state.dart          # States untuk PostBloc
+├── cubit/                        # Cubit components
+│   ├── user_cubit.dart          # Cubit untuk Users
+│   └── user_state.dart          # States untuk UserCubit
+├── screens/                      # UI screens
+│   ├── home_screen.dart         # Home dengan menu navigation
+│   ├── posts_screen.dart        # setState pattern demo
+│   ├── bloc_posts_screen.dart   # BLoC pattern demo
+│   ├── users_screen.dart        # setState pattern demo
+│   ├── cubit_users_screen.dart  # Cubit pattern demo
+│   ├── create_post_screen.dart  # Form setState version
+│   ├── bloc_create_post_screen.dart # Form BLoC version
+│   └── api_demo_screen.dart     # API testing console
+├── widgets/                      # Reusable widgets
+│   ├── post_card.dart           # Widget untuk display post
+│   ├── user_card.dart           # Widget untuk display user
+│   └── loading_widget.dart      # Loading, error, empty states
+└── services/                     # Legacy API service
+    └── api_service.dart         # Direct API calls (for comparison)
 ```
 
 ## 🚀 Fitur Aplikasi
 
-### 1. **Posts API Demo**
-- ✅ **GET** - Mengambil semua posts
+### 1. **State Management Comparison**
+- ✅ **setState Pattern** - Posts & Users (traditional approach)
+- ✅ **BLoC Pattern** - Posts dengan Events + States
+- ✅ **Cubit Pattern** - Users dengan method calls
+- ✅ **Dependency Injection** - GetIt untuk loose coupling
+
+### 2. **CRUD Operations**
+- ✅ **GET** - Mengambil semua posts/users
 - ✅ **POST** - Membuat post baru
 - ✅ **PUT** - Mengupdate post yang ada
 - ✅ **DELETE** - Menghapus post
 
-### 2. **Users API Demo**
-- ✅ **GET** - Mengambil data users dengan nested objects
-- ✅ Menampilkan data kompleks (address, company, dll)
+### 3. **Advanced Features**
+- ✅ **Search & Filter** - Pencarian posts dan users
+- ✅ **Caching** - Repository layer caching
+- ✅ **Error Handling** - Comprehensive error states
+- ✅ **Loading States** - Proper loading indicators
+- ✅ **Unit Testing** - BLoC dan Cubit testing
 
-### 3. **API Testing Console**
-- ✅ Test semua HTTP methods
-- ✅ Melihat request dan response
-- ✅ Error handling
-- ✅ Connection testing
+### 4. **API Integration**
+- ✅ **Data Providers** - Abstraksi API calls
+- ✅ **Repository Pattern** - Data source abstraction
+- ✅ **Mock Data** - Testing dengan mock providers
+- ✅ **API Testing Console** - Live API testing tools
 
 ## 📖 Cara Menggunakan
 
@@ -99,10 +149,12 @@ flutter run
 ```
 
 ### 2. Navigasi Aplikasi
-1. **Home Screen**: Pilih jenis demo yang ingin dipelajari
-2. **Posts Screen**: Praktik CRUD operations
-3. **Users Screen**: Lihat cara handle data kompleks
-4. **API Demo**: Test dan eksperimen dengan API calls
+1. **Home Screen**: Pilih pattern dan demo yang ingin dipelajari
+2. **Posts API** (setState): Traditional state management
+3. **Posts BLoC**: Event-driven state management
+4. **Users API** (setState): Traditional approach untuk data kompleks
+5. **Users Cubit**: Simple state management dengan methods
+6. **API Demo**: Testing console untuk semua operations
 
 ### 3. Belajar Step by Step
 
@@ -119,12 +171,29 @@ Buka `lib/services/api_service.dart` untuk mempelajari:
 - Error handling
 - Timeout handling
 
-#### Step 3: Pahami UI Integration
-Lihat screen files untuk memahami:
-- Cara handle loading states
-- Error handling di UI
-- Integrasi dengan API service
-- State management sederhana
+#### Step 3: Pelajari Data Layer
+Eksplorasi arsitektur data layer:
+- **Data Providers** (`lib/data/providers/`) - Akses langsung ke API
+- **Repositories** (`lib/data/repositories/`) - Abstraksi dan caching
+- **Dependency Injection** (`lib/core/dependency_injection.dart`)
+
+#### Step 4: Pahami BLoC Pattern
+Buka `lib/bloc/` untuk mempelajari:
+- **Events** (`post_event.dart`) - Actions yang dikirim ke BLoC
+- **States** (`post_state.dart`) - Representasi kondisi aplikasi
+- **BLoC** (`post_bloc.dart`) - Business logic dan event handling
+
+#### Step 5: Pahami Cubit Pattern
+Lihat `lib/cubit/` untuk memahami:
+- **States** (`user_state.dart`) - Kondisi aplikasi
+- **Cubit** (`user_cubit.dart`) - Simple state management dengan methods
+
+#### Step 6: Bandingkan UI Patterns
+Bandingkan implementasi yang berbeda:
+- **setState**: `posts_screen.dart` vs `bloc_posts_screen.dart`
+- **BlocBuilder**: Rebuild UI berdasarkan state
+- **BlocListener**: Handle side effects (snackbar, navigation)
+- **BlocConsumer**: Kombinasi builder + listener
 
 ## 🔧 Penjelasan Kode Penting
 
@@ -183,6 +252,117 @@ Future<void> _loadPosts() async {
     });
   }
 }
+```
+
+### 4. BLoC Event and State
+```dart
+// Event - Action yang dikirim ke BLoC
+abstract class PostEvent extends Equatable {
+  const PostEvent();
+}
+
+class LoadPosts extends PostEvent {
+  const LoadPosts();
+  @override
+  List<Object?> get props => [];
+}
+
+// State - Kondisi aplikasi
+abstract class PostState extends Equatable {
+  const PostState();
+}
+
+class PostLoading extends PostState {
+  const PostLoading();
+  @override
+  List<Object?> get props => [];
+}
+
+class PostLoaded extends PostState {
+  final List<Post> posts;
+  const PostLoaded({required this.posts});
+  @override
+  List<Object?> get props => [posts];
+}
+```
+
+### 5. BLoC Implementation
+```dart
+class PostBloc extends Bloc<PostEvent, PostState> {
+  final PostRepository _repository;
+  
+  PostBloc(this._repository) : super(const PostInitial()) {
+    on<LoadPosts>(_onLoadPosts);
+  }
+
+  Future<void> _onLoadPosts(LoadPosts event, Emitter<PostState> emit) async {
+    emit(const PostLoading());
+    try {
+      final posts = await _repository.getAllPosts();
+      emit(PostLoaded(posts: posts));
+    } catch (error) {
+      emit(PostError(error.toString()));
+    }
+  }
+}
+```
+
+### 6. BLoC UI Integration
+```dart
+BlocBuilder<PostBloc, PostState>(
+  builder: (context, state) {
+    if (state is PostLoading) {
+      return const CircularProgressIndicator();
+    } else if (state is PostLoaded) {
+      return ListView.builder(
+        itemCount: state.posts.length,
+        itemBuilder: (context, index) {
+          return PostCard(post: state.posts[index]);
+        },
+      );
+    } else if (state is PostError) {
+      return Text('Error: ${state.message}');
+    }
+    return const SizedBox();
+  },
+)
+```
+
+### 7. Cubit Implementation
+```dart
+class UserCubit extends Cubit<UserState> {
+  final UserRepository _repository;
+  
+  UserCubit(this._repository) : super(const UserInitial());
+
+  Future<void> loadUsers() async {
+    emit(const UserLoading());
+    try {
+      final users = await _repository.getAllUsers();
+      emit(UserLoaded(users: users));
+    } catch (error) {
+      emit(UserError(error.toString()));
+    }
+  }
+}
+```
+
+### 8. Dependency Injection
+```dart
+// Setup dependencies
+Future<void> setupDependencyInjection() async {
+  getIt.registerLazySingleton<PostDataProvider>(() => PostApiProvider());
+  getIt.registerLazySingleton<PostRepository>(
+    () => PostRepositoryImpl(getIt<PostDataProvider>()),
+  );
+  getIt.registerFactory<PostBloc>(() => PostBloc(getIt<PostRepository>()));
+}
+
+// Usage in UI
+BlocProvider(
+  create: (context) => getIt<PostBloc>()..add(const LoadPosts()),
+  child: PostsView(),
+)
 ```
 
 ## 🎯 Learning Points

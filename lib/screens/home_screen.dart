@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'posts_screen.dart';
 import 'users_screen.dart';
 import 'api_demo_screen.dart';
+import 'bloc_posts_screen.dart';
+import 'cubit_users_screen.dart';
 
 // Screen utama dengan navigation ke berbagai contoh API
 class HomeScreen extends StatelessWidget {
@@ -49,14 +51,14 @@ class HomeScreen extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        'Aplikasi ini mendemonstrasikan penggunaan HTTP package untuk berkomunikasi dengan API menggunakan JSONPlaceholder.',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[700],
-                          height: 1.4,
-                        ),
-                      ),
+                                    Text(
+                'Aplikasi ini mendemonstrasikan penggunaan HTTP package dan BLoC architecture untuk berkomunikasi dengan API menggunakan JSONPlaceholder.',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[700],
+                  height: 1.4,
+                ),
+              ),
                     ],
                   ),
                 ),
@@ -80,12 +82,12 @@ class HomeScreen extends StatelessWidget {
                   crossAxisCount: 2,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
-                  childAspectRatio: 1.1,
+                  childAspectRatio: 1.0,
                   children: [
                     _buildMenuCard(
                       context,
                       title: 'Posts API',
-                      subtitle: 'GET, POST, PUT, DELETE',
+                      subtitle: 'setState pattern',
                       icon: Icons.article,
                       color: Colors.blue,
                       onTap: () => Navigator.push(
@@ -98,14 +100,42 @@ class HomeScreen extends StatelessWidget {
                     
                     _buildMenuCard(
                       context,
+                      title: 'Posts BLoC',
+                      subtitle: 'Event + State pattern',
+                      icon: Icons.architecture,
+                      color: Colors.indigo,
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const BlocPostsScreen(),
+                        ),
+                      ),
+                    ),
+                    
+                    _buildMenuCard(
+                      context,
                       title: 'Users API',
-                      subtitle: 'GET data kompleks',
+                      subtitle: 'setState pattern',
                       icon: Icons.people,
                       color: Colors.green,
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const UsersScreen(),
+                        ),
+                      ),
+                    ),
+                    
+                    _buildMenuCard(
+                      context,
+                      title: 'Users Cubit',
+                      subtitle: 'Method pattern',
+                      icon: Icons.people_alt,
+                      color: Colors.teal,
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CubitUsersScreen(),
                         ),
                       ),
                     ),
@@ -126,11 +156,11 @@ class HomeScreen extends StatelessWidget {
                     
                     _buildMenuCard(
                       context,
-                      title: 'Package Info',
-                      subtitle: 'Tentang package HTTP',
+                      title: 'Architecture Info',
+                      subtitle: 'BLoC vs Cubit patterns',
                       icon: Icons.info,
                       color: Colors.purple,
-                      onTap: () => _showPackageInfo(context),
+                      onTap: () => _showArchitectureInfo(context),
                     ),
                   ],
                 ),
@@ -204,11 +234,11 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void _showPackageInfo(BuildContext context) {
+  void _showArchitectureInfo(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Package HTTP'),
+        title: const Text('Architecture Patterns'),
         content: const SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -220,20 +250,33 @@ class HomeScreen extends StatelessWidget {
               ),
               SizedBox(height: 8),
               Text('• http: ^1.2.0 - Untuk HTTP requests'),
-              Text('• provider: ^6.1.1 - State management'),
-              Text('• shared_preferences: ^2.2.2 - Local storage'),
+              Text('• flutter_bloc: ^8.1.3 - BLoC state management'),
+              Text('• get_it: ^7.6.4 - Dependency injection'),
+              Text('• equatable: ^2.0.5 - State comparison'),
               SizedBox(height: 16),
               Text(
-                'API yang digunakan:',
+                'Architecture Patterns:',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8),
-              Text('JSONPlaceholder - https://jsonplaceholder.typicode.com'),
+              Text('🔄 BLoC Pattern:'),
+              Text('  • Events + States'),
+              Text('  • Complex business logic'),
+              Text('  • Reactive programming'),
               SizedBox(height: 8),
+              Text('🧊 Cubit Pattern:'),
+              Text('  • Method calls'),
+              Text('  • Simple state changes'),
+              Text('  • Less boilerplate'),
+              SizedBox(height: 16),
               Text(
-                'API gratis untuk testing dan prototyping dengan data fake yang realistis.',
-                style: TextStyle(fontStyle: FontStyle.italic),
+                'Layer Architecture:',
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
+              SizedBox(height: 8),
+              Text('• Presentation Layer (UI)'),
+              Text('• Business Logic Layer (BLoC/Cubit)'),
+              Text('• Data Layer (Repository + Provider)'),
             ],
           ),
         ),
